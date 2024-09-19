@@ -1,7 +1,7 @@
 
 
-version 18.5
-log using "GSS 2017Family,Cycle31Tables_Recode.do"
+version 18
+log using "GSS 2017Family,Cycle31Tables_Recode.do", replace
 ************************************************************************
 ************************************************************************
 * AUTHOR: Mahjoube AmaniChakani
