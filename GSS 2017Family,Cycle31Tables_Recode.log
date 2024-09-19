@@ -1,0 +1,178 @@
+-------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\Mahjoob.Amani\Desktop\RRWM  Data Activity\GSS 2017 - Family, Cycle 31
+> \GSS 2017Family,Cycle31Tables_Recode.log
+  log type:  text
+ opened on:  19 Sep 2024, 14:23:48
+
+. ************************************************************************
+. ************************************************************************
+. * AUTHOR: Mahjoube AmaniChakani
+. * DATE STARTED: September , 2024
+. * FUNCTION: Family structure and household organization
+. * INPUT DATA: gss-12M0025-E-2017-c-31_F1
+. * OUTPUT DATA: 
+. ************************************************************************
+. ************************************************************************
+. 
+. clear all
+
+. 
+. /* Reading the database */
+. cd "C:\Users\Mahjoob.Amani\Desktop\RRWM  Data Activity\GSS 2017 - Family, Cycle 31"
+C:\Users\Mahjoob.Amani\Desktop\RRWM  Data Activity\GSS 2017 - Family, Cycle 31
+
+. import delimited "C:\Users\Mahjoob.Amani\Desktop\RRWM  Data Activity\GSS 2017 - Family, C
+> ycle 31\gss-12M0025-E-2017-c-31_F1.csv"
+(encoding automatically selected: ISO-8859-1)
+(1,316 vars, 20,602 obs)
+
+. 
+. * Keeping Necessary variables : (Demographics, Groupe Organization and decision making wi
+> thin the household, Groupe SRH: Self Rated Health)
+. 
+. keep agec agegr10 sex marstat sexpr prtypec com_115 com_120 com_125 com_130 com_135 com_1
+> 40 com_145 com_150 com_155 srh_110 srh_115 
+
+. 
+. *REmoving missing values 
+. 
+. drop if agec ==.
+(0 observations deleted)
+
+. drop if agegr10 ==.
+(0 observations deleted)
+
+. drop if sex ==.
+(0 observations deleted)
+
+. drop if marstat ==.
+(0 observations deleted)
+
+. drop if sexpr ==.
+(0 observations deleted)
+
+. 
+. sum agec
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+        agec |     20,602    51.70901    17.78984         15         80
+
+. tab sex
+
+        SEX |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |      9,399       45.62       45.62
+          2 |     11,203       54.38      100.00
+------------+-----------------------------------
+      Total |     20,602      100.00
+
+.  tab sexpr
+
+      SEXPR |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |      9,200       44.66       44.66
+          1 |      5,855       28.42       73.08
+          2 |      5,547       26.92      100.00
+------------+-----------------------------------
+      Total |     20,602      100.00
+
+.  sum marstat
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+     marstat |     20,602    2.897728    2.723095          1         98
+
+.  
+.  
+.  * Generating Shared_equally_division if more than half the chores are done equally betwe
+> en partners
+.  
+. gen count_3 = (com_115 == 3) + (com_120 == 3) + (com_125 == 3) + (com_130 == 3) + (com_13
+> 5 == 3) + (com_140 == 3) + (com_145 == 3) + (com_150 == 3) + (com_155 == 3)
+
+. 
+. gen Shared_equally_division = 1 if count_3 >= 5
+(16,125 missing values generated)
+
+. replace Shared_equally_division = 0 if count_3 < 5
+(16,125 real changes made)
+
+. 
+. tab Shared_equally_division
+
+Shared_equa |
+lly_divisio |
+          n |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |     16,125       78.27       78.27
+          1 |      4,477       21.73      100.00
+------------+-----------------------------------
+      Total |     20,602      100.00
+
+. 
+. */*Recoding
+> tostring sex, replace
+> replace sex = "male" if sex == "1"
+> replace sex = "female" if sex == "2"
+> la var sex 
+> 
+> tostring sexpr, replace
+> replace sexpr = "male" if sex == "1"
+> replace sexpr = "female" if sex == "2"
+> 
+> tostring srh_110, replace
+> replace srh_110 = "Excellent" if srh_110 == "1"
+> replace srh_110 = "Very good" if srh_110 == "2"
+> replace srh_110 = "Good" if srh_110 == "3"
+> replace srh_110 = "Fair" if srh_110 == "4"
+> replace srh_110 = "Poor" if srh_110 == "5"
+> replace srh_110 = "Valid skip" if srh_110 == "6"
+> replace srh_110 = "Don't know" if srh_110 == "7"
+> replace srh_110 = "Refusal" if srh_110 == "8"
+> replace srh_110 = "Not stated" if srh_110 == "9"
+> 
+> 
+> 
+> tostring srh_115, replace
+> replace srh_115 = "Excellent" if srh_115 == "1"
+> replace srh_115 = "Very good" if srh_115 == "2"
+> replace srh_115 = "Good" if srh_115 == "3"
+> replace srh_115 = "Fair" if srh_115 == "4"
+> replace srh_115 = "Poor" if srh_115 == "5"
+> replace srh_115 = "Valid skip" if srh_115 == "6"
+> replace srh_115 = "Don't know" if srh_115 == "7"
+> replace srh_115 = "Refusal" if srh_115 == "8"
+> replace srh_115 = "Not stated" if srh_115 == "9"
+> 
+> 
+> 
+> tostring marstat, replace  // Convert the numeric variable to string
+> 
+> replace marstat = "Married/Common-law" if marstat == "1"
+> replace marstat = "Previously Married" if marstat == "2"
+> replace marstat = "Single/Never Married" if marstat == "3"
+> 
+> tostring Shared_equally_division, replace
+> replace Shared_equally_division = "yes" if Shared_equally_division == "1"
+> replace Shared_equally_division = "no" if Shared_equally_division == "0" */
+. 
+. rename sex Sex_of_Respondant
+
+. rename sexpr Sex_of_Partner
+
+. rename marstat Marital_Status
+
+. rename srh_110 Self_Rated_health
+
+. rename srh_115 nSelf_Rated_Mental_health
+
+. 
+. *Save results
+. save "results.dta", replace
+file results.dta saved
+
+. 
+end of do-file
+
