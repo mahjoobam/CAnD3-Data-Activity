@@ -45,12 +45,11 @@ replace Shared_equally_division = 0 if count_3 < 5
 
 tab Shared_equally_division
 
-
-*Recoding
+*/*Recoding
 tostring sex, replace
 replace sex = "male" if sex == "1"
 replace sex = "female" if sex == "2"
-
+la var sex 
 
 tostring sexpr, replace
 replace sexpr = "male" if sex == "1"
@@ -90,7 +89,7 @@ replace marstat = "Single/Never Married" if marstat == "3"
 
 tostring Shared_equally_division, replace
 replace Shared_equally_division = "yes" if Shared_equally_division == "1"
-replace Shared_equally_division = "no" if Shared_equally_division == "0"
+replace Shared_equally_division = "no" if Shared_equally_division == "0" */
 
 rename sex Sex_of_Respondant
 rename sexpr Sex_of_Partner
@@ -100,11 +99,3 @@ rename srh_115 nSelf_Rated_Mental_health
 
 *Save results
 save "results.dta", replace
-
-log close
-
-
-
-
-
-
