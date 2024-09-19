@@ -1,0 +1,259 @@
+{smcl}
+{txt}{sf}{ul off}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\Mahjoob.Amani\Desktop\RRWM  Data Activity\GSS 2017 - Family, Cycle 31\GSS 2017Family,Cycle31Tables_Recode.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}19 Sep 2024, 11:02:30
+{txt}
+{com}. ************************************************************************
+. ************************************************************************
+. * AUTHOR: Mahjoube AmaniChakani
+. * DATE STARTED: September , 2024
+. * FUNCTION: Family structure and household organization
+. * INPUT DATA: gss-12M0025-E-2017-c-31_F1
+. * OUTPUT DATA: 
+. ************************************************************************
+. ************************************************************************
+. 
+. clear all
+{res}{txt}
+{com}. 
+. /* Reading the database */
+. cd "C:\Users\Mahjoob.Amani\Desktop\RRWM  Data Activity\GSS 2017 - Family, Cycle 31"
+{res}C:\Users\Mahjoob.Amani\Desktop\RRWM  Data Activity\GSS 2017 - Family, Cycle 31
+{txt}
+{com}. import delimited "C:\Users\Mahjoob.Amani\Desktop\RRWM  Data Activity\GSS 2017 - Family, Cycle 31\gss-12M0025-E-2017-c-31_F1.csv"
+{res}{txt}(encoding automatically selected: ISO-8859-1)
+{text}(1,316 vars, 20,602 obs)
+
+{com}. 
+. * Keeping Necessary variables : (Demographics, Groupe Organization and decision making within the household, Groupe SRH: Self Rated Health)
+. 
+. keep agec agegr10 sex marstat sexpr prtypec com_115 com_120 com_125 com_130 com_135 com_140 com_145 com_150 com_155 srh_110 srh_115 
+{txt}
+{com}. 
+. *REmoving missing values 
+. 
+. drop if agec ==.
+{txt}(0 observations deleted)
+
+{com}. drop if agegr10 ==.
+{txt}(0 observations deleted)
+
+{com}. drop if sex ==.
+{txt}(0 observations deleted)
+
+{com}. drop if marstat ==.
+{txt}(0 observations deleted)
+
+{com}. drop if sexpr ==.
+{txt}(0 observations deleted)
+
+{com}. 
+. sum agec
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 8}agec {c |}{res}     20,602    51.70901    17.78984         15         80
+{txt}
+{com}. tab sex
+
+        {txt}SEX {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          1 {c |}{res}      9,399       45.62       45.62
+{txt}          2 {c |}{res}     11,203       54.38      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     20,602      100.00
+{txt}
+{com}.  tab sexpr
+
+      {txt}SEXPR {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}      9,200       44.66       44.66
+{txt}          1 {c |}{res}      5,855       28.42       73.08
+{txt}          2 {c |}{res}      5,547       26.92      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     20,602      100.00
+{txt}
+{com}.  sum marstat
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}marstat {c |}{res}     20,602    2.897728    2.723095          1         98
+{txt}
+{com}.  
+.  
+.  * Generating Shared_equally_division if more than half the chores are done equally between partners
+.  
+. gen count_3 = (com_115 == 3) + (com_120 == 3) + (com_125 == 3) + (com_130 == 3) + (com_135 == 3) + (com_140 == 3) + (com_145 == 3) + (com_150 == 3) + (com_155 == 3)
+{txt}
+{com}. 
+. gen Shared_equally_division = 1 if count_3 >= 5
+{txt}(16,125 missing values generated)
+
+{com}. replace Shared_equally_division = 0 if count_3 < 5
+{txt}(16,125 real changes made)
+
+{com}. 
+. tab Shared_equally_division
+
+{txt}Shared_equa {c |}
+lly_divisio {c |}
+          n {c |}      Freq.     Percent        Cum.
+{hline 12}{c +}{hline 35}
+          0 {c |}{res}     16,125       78.27       78.27
+{txt}          1 {c |}{res}      4,477       21.73      100.00
+{txt}{hline 12}{c +}{hline 35}
+      Total {c |}{res}     20,602      100.00
+{txt}
+{com}. 
+. 
+. *Recoding
+. tostring sex, replace
+{txt}sex was {res:byte} now {res:str1}
+
+{com}. replace sex = "male" if sex == "1"
+{txt}variable {bf}{res}sex{sf}{txt} was {bf}{res}str1{sf}{txt} now {bf}{res}str4{sf}
+{txt}(9,399 real changes made)
+
+{com}. replace sex = "female" if sex == "2"
+{txt}variable {bf}{res}sex{sf}{txt} was {bf}{res}str4{sf}{txt} now {bf}{res}str6{sf}
+{txt}(11,203 real changes made)
+
+{com}. 
+. 
+. tostring sexpr, replace
+{txt}sexpr was {res:byte} now {res:str1}
+
+{com}. replace sexpr = "male" if sex == "1"
+{txt}(0 real changes made)
+
+{com}. replace sexpr = "female" if sex == "2"
+{txt}(0 real changes made)
+
+{com}. 
+. tostring srh_110, replace
+{txt}srh_110 was {res:byte} now {res:str1}
+
+{com}. replace srh_110 = "Excellent" if srh_110 == "1"
+{txt}variable {bf}{res}srh_110{sf}{txt} was {bf}{res}str1{sf}{txt} now {bf}{res}str9{sf}
+{txt}(4,376 real changes made)
+
+{com}. replace srh_110 = "Very good" if srh_110 == "2"
+{txt}(7,014 real changes made)
+
+{com}. replace srh_110 = "Good" if srh_110 == "3"
+{txt}(6,162 real changes made)
+
+{com}. replace srh_110 = "Fair" if srh_110 == "4"
+{txt}(2,078 real changes made)
+
+{com}. replace srh_110 = "Poor" if srh_110 == "5"
+{txt}(816 real changes made)
+
+{com}. replace srh_110 = "Valid skip" if srh_110 == "6"
+{txt}(0 real changes made)
+
+{com}. replace srh_110 = "Don't know" if srh_110 == "7"
+{txt}variable {bf}{res}srh_110{sf}{txt} was {bf}{res}str9{sf}{txt} now {bf}{res}str10{sf}
+{txt}(57 real changes made)
+
+{com}. replace srh_110 = "Refusal" if srh_110 == "8"
+{txt}(42 real changes made)
+
+{com}. replace srh_110 = "Not stated" if srh_110 == "9"
+{txt}(57 real changes made)
+
+{com}. 
+. 
+. 
+. tostring srh_115, replace
+{txt}srh_115 was {res:byte} now {res:str1}
+
+{com}. replace srh_115 = "Excellent" if srh_115 == "1"
+{txt}variable {bf}{res}srh_115{sf}{txt} was {bf}{res}str1{sf}{txt} now {bf}{res}str9{sf}
+{txt}(6,080 real changes made)
+
+{com}. replace srh_115 = "Very good" if srh_115 == "2"
+{txt}(6,924 real changes made)
+
+{com}. replace srh_115 = "Good" if srh_115 == "3"
+{txt}(5,813 real changes made)
+
+{com}. replace srh_115 = "Fair" if srh_115 == "4"
+{txt}(1,296 real changes made)
+
+{com}. replace srh_115 = "Poor" if srh_115 == "5"
+{txt}(326 real changes made)
+
+{com}. replace srh_115 = "Valid skip" if srh_115 == "6"
+{txt}(0 real changes made)
+
+{com}. replace srh_115 = "Don't know" if srh_115 == "7"
+{txt}variable {bf}{res}srh_115{sf}{txt} was {bf}{res}str9{sf}{txt} now {bf}{res}str10{sf}
+{txt}(57 real changes made)
+
+{com}. replace srh_115 = "Refusal" if srh_115 == "8"
+{txt}(48 real changes made)
+
+{com}. replace srh_115 = "Not stated" if srh_115 == "9"
+{txt}(58 real changes made)
+
+{com}. 
+. 
+. 
+. tostring marstat, replace  // Convert the numeric variable to string
+{txt}marstat was {res:byte} now {res:str2}
+
+{com}. 
+. replace marstat = "Married/Common-law" if marstat == "1"
+{txt}variable {bf}{res}marstat{sf}{txt} was {bf}{res}str2{sf}{txt} now {bf}{res}str18{sf}
+{txt}(9,501 real changes made)
+
+{com}. replace marstat = "Previously Married" if marstat == "2"
+{txt}(2,075 real changes made)
+
+{com}. replace marstat = "Single/Never Married" if marstat == "3"
+{txt}variable {bf}{res}marstat{sf}{txt} was {bf}{res}str18{sf}{txt} now {bf}{res}str20{sf}
+{txt}(1,899 real changes made)
+
+{com}. 
+. tostring Shared_equally_division, replace
+{txt}Shared_equally_division was {res:float} now {res:str1}
+
+{com}. replace Shared_equally_division = "yes" if Shared_equally_division == "1"
+{txt}variable {bf}{res}Shared_equally_division{sf}{txt} was {bf}{res}str1{sf}{txt} now {bf}{res}str3{sf}
+{txt}(4,477 real changes made)
+
+{com}. replace Shared_equally_division = "no" if Shared_equally_division == "0"
+{txt}(16,125 real changes made)
+
+{com}. 
+. rename sex Sex_of_Respondant
+{res}{txt}
+{com}. rename sexpr Sex_of_Partner
+{res}{txt}
+{com}. rename marstat Marital_Status
+{res}{txt}
+{com}. rename srh_110 Self_Rated_health
+{res}{txt}
+{com}. rename srh_115 nSelf_Rated_Mental_health
+{res}{txt}
+{com}. 
+. *Save results
+. save "results.dta", replace
+{txt}{p 0 4 2}
+file {bf}
+results.dta{rm}
+saved
+{p_end}
+
+{com}. 
+. log close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\Mahjoob.Amani\Desktop\RRWM  Data Activity\GSS 2017 - Family, Cycle 31\GSS 2017Family,Cycle31Tables_Recode.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}19 Sep 2024, 11:02:33
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}
