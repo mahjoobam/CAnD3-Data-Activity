@@ -1,2 +1,3 @@
 # CAnD3-Data-Activity
-Practicing Replicability and Reproducibility
+PURPOSE: CAnD3 Training Activity, 2024 Practicing Replicability and Reproducibility
+research Title: Family structure and household organization
