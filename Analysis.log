@@ -1,0 +1,263 @@
+-------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\Mahjoob.Amani\Desktop\RRWM  Data Activity\GSS 2017 - Family, Cycle 31
+> \Analysis.log
+  log type:  text
+ opened on:  19 Sep 2024, 16:18:25
+
+. cd "C:\Users\Mahjoob.Amani\Desktop\RRWM  Data Activity\GSS 2017 - Family, Cycle 31"
+C:\Users\Mahjoob.Amani\Desktop\RRWM  Data Activity\GSS 2017 - Family, Cycle 31
+
+.  use "results.dta"
+
+.  
+.  * Descriptive analysis
+.  codebook Marital_Status
+
+-------------------------------------------------------------------------------------------
+Marital_Status                                                                      MARSTAT
+-------------------------------------------------------------------------------------------
+
+                  Type: Numeric (byte)
+
+                 Range: [1,98]                        Units: 1
+         Unique values: 8                         Missing .: 0/20,602
+
+            Tabulation: Freq.  Value
+                        9,501  1
+                        2,075  2
+                        1,899  3
+                          643  4
+                        1,767  5
+                        4,710  6
+                            2  97
+                            5  98
+
+.  sum agec
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+        agec |     20,602    51.70901    17.78984         15         80
+
+.  tab nSelf_Rated_Mental_health Shared_equally_division
+
+           | Shared_equally_divisi
+           |          on
+   SRH_115 |         0          1 |     Total
+-----------+----------------------+----------
+         1 |     4,591      1,489 |     6,080 
+         2 |     5,344      1,580 |     6,924 
+         3 |     4,632      1,181 |     5,813 
+         4 |     1,138        158 |     1,296 
+         5 |       294         32 |       326 
+         7 |        50          7 |        57 
+         8 |        39          9 |        48 
+         9 |        37         21 |        58 
+-----------+----------------------+----------
+     Total |    16,125      4,477 |    20,602 
+
+.  tab Shared_equally_division nSelf_Rated_Mental_health
+
+Shared_equ |
+ally_divis |                              SRH_115
+       ion |         1          2          3          4          5          7 |     Total
+-----------+------------------------------------------------------------------+----------
+         0 |     4,591      5,344      4,632      1,138        294         50 |    16,125 
+         1 |     1,489      1,580      1,181        158         32          7 |     4,477 
+-----------+------------------------------------------------------------------+----------
+     Total |     6,080      6,924      5,813      1,296        326         57 |    20,602 
+
+
+Shared_equ |
+ally_divis |        SRH_115
+       ion |         8          9 |     Total
+-----------+----------------------+----------
+         0 |        39         37 |    16,125 
+         1 |         9         21 |     4,477 
+-----------+----------------------+----------
+     Total |        48         58 |    20,602 
+
+.  
+.  *Multivariate linear regression
+. reg agegr10 Sex_of_Respondant Marital_Status Sex_of_Partner Self_Rated_health nSelf_Rated
+> _Mental_health Shared_equally_division
+
+      Source |       SS           df       MS      Number of obs   =    20,602
+-------------+----------------------------------   F(6, 20595)     =    353.91
+       Model |  6185.74811         6  1030.95802   Prob > F        =    0.0000
+    Residual |  59994.6713    20,595  2.91306974   R-squared       =    0.0935
+-------------+----------------------------------   Adj R-squared   =    0.0932
+       Total |  66180.4194    20,601  3.21248577   Root MSE        =    1.7068
+
+------------------------------------------------------------------------------------------
+                 agegr10 | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+       Sex_of_Respondant |   .1177307    .027552     4.27   0.000     .0637267    .1717347
+          Marital_Status |  -.1480567   .0059041   -25.08   0.000    -.1596293   -.1364842
+          Sex_of_Partner |   -.077435   .0223577    -3.46   0.001    -.1212579   -.0336121
+       Self_Rated_health |   .4231421   .0123504    34.26   0.000     .3989343    .4473498
+nSelf_Rated_Mental_hea~h |  -.2272644   .0129884   -17.50   0.000    -.2527227   -.2018062
+ Shared_equally_division |  -.1938894   .0325379    -5.96   0.000    -.2576662   -.1301125
+                   _cons |   4.046495   .0705567    57.35   0.000     3.908198    4.184791
+------------------------------------------------------------------------------------------
+
+. 
+. 
+. * Bivariate logistic
+. logistic Shared_equally_division i.nSelf_Rated_Mental_health
+
+Logistic regression                                     Number of obs = 20,602
+                                                        LR chi2(7)    = 159.69
+                                                        Prob > chi2   = 0.0000
+Log likelihood = -10704.908                             Pseudo R2     = 0.0074
+
+------------------------------------------------------------------------------------------
+ Shared_equally_division | Odds ratio   Std. err.      z    P>|z|     [95% conf. interval]
+-------------------------+----------------------------------------------------------------
+nSelf_Rated_Mental_hea~h |
+                      2  |   .9115977   .0376904    -2.24   0.025     .8406397    .9885452
+                      3  |   .7861292   .0347327    -5.45   0.000     .7209186    .8572384
+                      4  |   .4280824   .0385209    -9.43   0.000     .3588659    .5106491
+                      5  |   .3355948   .0632672    -5.79   0.000     .2319234    .4856082
+                      7  |   .4316588   .1746734    -2.08   0.038     .1952975    .9540794
+                      8  |   .7115255   .2639765    -0.92   0.359     .3438698    1.472268
+                      9  |   1.749968   .4809564     2.04   0.042     1.021147    2.998969
+                         |
+                   _cons |   .3243302   .0096725   -37.76   0.000     .3059159     .343853
+------------------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. 
+. logistic Shared_equally_division i.Self_Rated_health
+
+Logistic regression                                     Number of obs = 20,602
+                                                        LR chi2(7)    = 154.25
+                                                        Prob > chi2   = 0.0000
+Log likelihood = -10707.629                             Pseudo R2     = 0.0072
+
+-----------------------------------------------------------------------------------------
+Shared_equally_division | Odds ratio   Std. err.      z    P>|z|     [95% conf. interval]
+------------------------+----------------------------------------------------------------
+      Self_Rated_health |
+                     2  |   .9596548   .0434426    -0.91   0.363     .8781769    1.048692
+                     3  |   .8839274   .0414739    -2.63   0.009     .8062657    .9690696
+                     4  |   .5751437   .0404455    -7.87   0.000     .5010924    .6601383
+                     5  |   .3916978   .0459138    -8.00   0.000     .3112974    .4928637
+                     7  |   .3038169   .1426588    -2.54   0.011     .1210391    .7626023
+                     8  |   .7434578   .2933251    -0.75   0.452     .3431009    1.610983
+                     9  |   1.843156   .5102854     2.21   0.027     1.071281    3.171179
+                        |
+                  _cons |   .3164862   .0111958   -32.52   0.000     .2952862    .3392081
+-----------------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. 
+. save"tables.dta"
+file tables.dta already exists
+r(602);
+
+end of do-file
+
+r(602);
+
+. do "C:\Users\MAHJOO~1.AMA\AppData\Local\Temp\STD5484_000000.tmp"
+
+. version 18
+
+. 
+. ************************************************************************
+. ************************************************************************
+. * AUTHOR: Mahjoube AmaniChakani
+. * DATE STARTED: September , 2024
+. * FUNCTION: Family structure and household organization
+. * INPUT DATA: gss-12M0025-E-2017-c-31_F1
+. * OUTPUT DATA: 
+. ************************************************************************
+. ************************************************************************
+. 
+. clear all
+
+. log using "Analysis.log", replace
+log file already open
+r(604);
+
+end of do-file
+
+r(604);
+
+. do "C:\Users\MAHJOO~1.AMA\AppData\Local\Temp\STD5484_000000.tmp"
+
+. version 18
+
+. 
+. ************************************************************************
+. ************************************************************************
+. * AUTHOR: Mahjoube AmaniChakani
+. * DATE STARTED: September , 2024
+. * FUNCTION: Family structure and household organization
+. * INPUT DATA: gss-12M0025-E-2017-c-31_F1
+. * OUTPUT DATA: 
+. ************************************************************************
+. ************************************************************************
+. 
+. clear all
+
+. log using "Analysis1.log", replace
+log file already open
+r(604);
+
+end of do-file
+
+r(604);
+
+. do "C:\Users\MAHJOO~1.AMA\AppData\Local\Temp\STD5484_000000.tmp"
+
+. version 18
+
+. 
+. ************************************************************************
+. ************************************************************************
+. * AUTHOR: Mahjoube AmaniChakani
+. * DATE STARTED: September , 2024
+. * FUNCTION: Family structure and household organization
+. * INPUT DATA: gss-12M0025-E-2017-c-31_F1
+. * OUTPUT DATA: 
+. ************************************************************************
+. ************************************************************************
+. 
+. clear all
+
+. log using "Analysis1.log", replace
+log file already open
+r(604);
+
+end of do-file
+
+r(604);
+
+. do "C:\Users\MAHJOO~1.AMA\AppData\Local\Temp\STD5484_000000.tmp"
+
+. version 18
+
+. 
+. ************************************************************************
+. ************************************************************************
+. * AUTHOR: Mahjoube AmaniChakani
+. * DATE STARTED: September , 2024
+. * FUNCTION: Family structure and household organization
+. * INPUT DATA: gss-12M0025-E-2017-c-31_F1
+. * OUTPUT DATA: 
+. ************************************************************************
+. ************************************************************************
+. 
+. clear all
+
+. log using "Analysis1.do", replace
+log file already open
+r(604);
+
+end of do-file
+
+r(604);
+
+. exit, clear
